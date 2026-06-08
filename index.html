@@ -59,7 +59,7 @@ margin-bottom: 12px;
 opacity: 0.9;
 }
 header h1 {
-font-family: Impact, ‘Arial Narrow’, Arial, sans-serif; letter-spacing: 2px;
+font-family: ‘Arial Black’, Arial, sans-serif;
 font-size: clamp(42px, 8vw, 80px);
 letter-spacing: 6px;
 color: #fff;
@@ -148,18 +148,19 @@ gap: 16px;
 margin: 40px 0 16px;
 }
 .matchday-num {
-font-family: Impact, ‘Arial Narrow’, Arial, sans-serif; letter-spacing: 2px;
-font-size: 52px;
+font-family: ‘Arial Black’, Arial, sans-serif;
+font-size: 36px;
 line-height: 1;
 color: var(–accent);
-opacity: 0.3;
+opacity: 0.4;
 flex-shrink: 0;
+min-width: 32px;
 }
-.matchday-info { flex: 1; }
+.matchday-info { flex: 1; min-width: 0; }
 .matchday-title {
-font-family: Impact, ‘Arial Narrow’, Arial, sans-serif; letter-spacing: 2px;
-font-size: 28px;
-letter-spacing: 3px;
+font-family: ‘Arial Black’, Arial, sans-serif;
+font-size: 18px;
+letter-spacing: 1px;
 color: var(–text);
 }
 .matchday-date {
@@ -224,7 +225,7 @@ border-radius: 8px;
 display: flex;
 align-items: center;
 justify-content: center;
-font-family: Impact, ‘Arial Narrow’, Arial, sans-serif; letter-spacing: 2px;
+font-family: ‘Arial Black’, Arial, sans-serif;
 font-size: 17px;
 letter-spacing: 1px;
 background: var(–group-color, var(–border));
@@ -327,19 +328,22 @@ footer strong { color: var(–teal); }
 position: sticky;
 top: 0;
 z-index: 10;
-background: rgba(10,14,23,0.95);
+background: rgba(10,14,23,0.97);
 backdrop-filter: blur(8px);
 border-bottom: 1px solid var(–border);
 display: flex;
 justify-content: center;
-gap: 24px;
-padding: 10px 16px;
+align-items: center;
+gap: 16px;
+padding: 8px 16px;
+flex-wrap: nowrap;
 }
 .tz-item {
 display: flex;
 align-items: center;
-gap: 8px;
-font-size: 12px;
+gap: 6px;
+font-size: 11px;
+white-space: nowrap;
 }
 .tz-flag {
 font-size: 18px;
@@ -351,8 +355,10 @@ font-size: 18px;
 
 @media (max-width: 600px) {
 .matches-grid { grid-template-columns: 1fr; }
-header h1 { font-size: 38px; }
-.matchday-num { font-size: 38px; }
+header h1 { font-size: 32px; letter-spacing: 2px; }
+.matchday-num { font-size: 28px; }
+.matchday-title { font-size: 15px; }
+.match-count-badge { font-size: 10px; padding: 3px 8px; }
 }
 </style>
 
