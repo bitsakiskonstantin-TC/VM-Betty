@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VM 2026 — Bettingtävling Schema</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --surface: #111827;
+    --card: #161e2e;
+    --border: #1e2d42;
+    --accent: #e63946;
+    --gold: #f4a261;
+    --teal: #2dd4bf;
+    --text: #e8edf4;
+    --muted: #64748b;
+    --swedish-blue: #006AA7;
+    --swedish-yellow: #FECC02;
+    --us-red: #BF0A30;
+    --us-blue: #002868;
+  }
+
+- { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+background: var(–bg);
+color: var(–text);
+font-family: ‘DM Sans’, sans-serif;
+min-height: 100vh;
+padding: 0 0 60px;
+}
+
+/* ── HEADER ── */
+header {
+background: linear-gradient(135deg, #0a0e17 0%, #0d1b2e 50%, #0a0e17 100%);
+border-bottom: 3px solid var(–accent);
+padding: 40px 24px 32px;
+text-align: center;
+position: relative;
+overflow: hidden;
+}
+header::before {
+content: ‘’;
+position: absolute;
+top: 0; left: 0; right: 0; bottom: 0;
+background: radial-gradient(ellipse at 50% 0%, rgba(230,57,70,0.15) 0%, transparent 70%);
+pointer-events: none;
+}
+.header-flags {
+font-size: 36px;
+letter-spacing: 8px;
+margin-bottom: 12px;
+opacity: 0.9;
+}
+header h1 {
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: clamp(42px, 8vw, 80px);
+letter-spacing: 6px;
+color: #fff;
+line-height: 1;
+margin-bottom: 6px;
+}
+header h1 span { color: var(–accent); }
+.header-sub {
+font-size: 13px;
+letter-spacing: 4px;
+text-transform: uppercase;
+color: var(–muted);
+margin-bottom: 28px;
+}
+.header-meta {
+display: flex;
+justify-content: center;
+gap: 32px;
+flex-wrap: wrap;
+}
+.meta-pill {
+background: rgba(255,255,255,0.05);
+border: 1px solid var(–border);
+border-radius: 30px;
+padding: 8px 18px;
+font-size: 12px;
+letter-spacing: 1px;
+display: flex;
+align-items: center;
+gap: 8px;
+}
+.meta-pill .dot { width: 8px; height: 8px; border-radius: 50%; }
+.dot-red { background: var(–accent); }
+.dot-teal { background: var(–teal); }
+.dot-gold { background: var(–gold); }
+
+/* ── TIME LEGEND ── */
+.legend {
+max-width: 900px;
+margin: 24px auto 0;
+display: flex;
+gap: 12px;
+justify-content: center;
+flex-wrap: wrap;
+}
+.legend-item {
+display: flex;
+align-items: center;
+gap: 8px;
+font-size: 12px;
+color: var(–muted);
+}
+.legend-flag {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+width: 28px; height: 18px;
+border-radius: 3px;
+font-size: 11px;
+font-family: ‘DM Mono’, monospace;
+font-weight: 500;
+}
+.flag-us {
+background: var(–us-blue);
+color: #fff;
+border: 1px solid rgba(255,255,255,0.1);
+}
+.flag-se {
+background: var(–swedish-blue);
+color: var(–swedish-yellow);
+border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* ── MAIN CONTENT ── */
+main {
+max-width: 1100px;
+margin: 0 auto;
+padding: 0 16px;
+}
+
+/* ── MATCHDAY DIVIDER ── */
+.matchday-header {
+display: flex;
+align-items: center;
+gap: 16px;
+margin: 40px 0 16px;
+}
+.matchday-num {
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: 52px;
+line-height: 1;
+color: var(–accent);
+opacity: 0.3;
+flex-shrink: 0;
+}
+.matchday-info { flex: 1; }
+.matchday-title {
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: 28px;
+letter-spacing: 3px;
+color: var(–text);
+}
+.matchday-date {
+font-size: 12px;
+color: var(–teal);
+letter-spacing: 2px;
+text-transform: uppercase;
+margin-top: 2px;
+}
+.matchday-line {
+flex: 1;
+height: 1px;
+background: linear-gradient(to right, var(–border), transparent);
+}
+.match-count-badge {
+background: rgba(45,212,191,0.1);
+border: 1px solid rgba(45,212,191,0.3);
+color: var(–teal);
+font-size: 11px;
+letter-spacing: 1px;
+padding: 4px 10px;
+border-radius: 20px;
+white-space: nowrap;
+}
+
+/* ── MATCH CARDS GRID ── */
+.matches-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+gap: 10px;
+}
+
+.match-card {
+background: var(–card);
+border: 1px solid var(–border);
+border-radius: 10px;
+padding: 14px 16px;
+display: flex;
+align-items: center;
+gap: 14px;
+transition: border-color 0.2s, background 0.2s;
+position: relative;
+overflow: hidden;
+}
+.match-card::before {
+content: ‘’;
+position: absolute;
+left: 0; top: 0; bottom: 0;
+width: 3px;
+background: var(–group-color, var(–border));
+border-radius: 10px 0 0 10px;
+}
+.match-card:hover {
+border-color: rgba(255,255,255,0.12);
+background: #1a2236;
+}
+
+.group-badge {
+flex-shrink: 0;
+width: 32px; height: 32px;
+border-radius: 8px;
+display: flex;
+align-items: center;
+justify-content: center;
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: 17px;
+letter-spacing: 1px;
+background: var(–group-color, var(–border));
+color: #fff;
+opacity: 0.9;
+}
+
+.match-teams {
+flex: 1;
+min-width: 0;
+}
+.match-teams .teams {
+font-size: 14px;
+font-weight: 600;
+color: var(–text);
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+line-height: 1.3;
+}
+.match-teams .venue {
+font-size: 11px;
+color: var(–muted);
+margin-top: 3px;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+
+.match-times {
+flex-shrink: 0;
+text-align: right;
+display: flex;
+flex-direction: column;
+gap: 4px;
+}
+.time-row {
+display: flex;
+align-items: center;
+gap: 6px;
+justify-content: flex-end;
+}
+.time-badge {
+font-family: ‘DM Mono’, monospace;
+font-size: 13px;
+font-weight: 500;
+}
+.time-us { color: #a8b8d8; }
+.time-se { color: var(–swedish-yellow); }
+.time-label {
+font-size: 9px;
+letter-spacing: 1px;
+text-transform: uppercase;
+color: var(–muted);
+width: 22px;
+text-align: right;
+}
+
+/* ── GROUP COLORS ── */
+.g-A { –group-color: #e63946; }
+.g-B { –group-color: #f4a261; }
+.g-C { –group-color: #2a9d8f; }
+.g-D { –group-color: #457b9d; }
+.g-E { –group-color: #8338ec; }
+.g-F { –group-color: #3a86ff; }
+.g-G { –group-color: #fb5607; }
+.g-H { –group-color: #06d6a0; }
+.g-I { –group-color: #ff006e; }
+.g-J { –group-color: #8ecae6; }
+.g-K { –group-color: #e9c46a; }
+.g-L { –group-color: #b5838d; }
+
+/* ── NEXT DAY INDICATOR ── */
+.next-day {
+display: inline-block;
+background: rgba(244,162,97,0.15);
+border: 1px solid rgba(244,162,97,0.4);
+color: var(–gold);
+font-size: 9px;
+letter-spacing: 1px;
+text-transform: uppercase;
+padding: 2px 6px;
+border-radius: 4px;
+margin-left: 4px;
+vertical-align: middle;
+}
+
+/* ── FOOTER ── */
+footer {
+text-align: center;
+padding: 40px 24px 20px;
+color: var(–muted);
+font-size: 11px;
+letter-spacing: 1px;
+}
+footer strong { color: var(–teal); }
+
+/* ── STICKY TIMEZONE BAR ── */
+.tz-bar {
+position: sticky;
+top: 0;
+z-index: 10;
+background: rgba(10,14,23,0.95);
+backdrop-filter: blur(8px);
+border-bottom: 1px solid var(–border);
+display: flex;
+justify-content: center;
+gap: 24px;
+padding: 10px 16px;
+}
+.tz-item {
+display: flex;
+align-items: center;
+gap: 8px;
+font-size: 12px;
+}
+.tz-flag {
+font-size: 18px;
+}
+.tz-name { color: var(–muted); }
+.tz-val { font-weight: 600; }
+.tz-val.us { color: #a8b8d8; }
+.tz-val.se { color: var(–swedish-yellow); }
+
+@media (max-width: 600px) {
+.matches-grid { grid-template-columns: 1fr; }
+header h1 { font-size: 38px; }
+.matchday-num { font-size: 38px; }
+}
+</style>
+
+</head>
+<body>
+
+<header>
+  <div class="header-flags">🇸🇪 ⚽ 🇺🇸</div>
+  <h1>VM <span>2026</span></h1>
+  <div class="header-sub">Bettingtävling — Gruppspelsschema</div>
+  <div class="header-meta">
+    <div class="meta-pill"><span class="dot dot-red"></span>72 matcher · 17 matchdagar</div>
+    <div class="meta-pill"><span class="dot dot-teal"></span>11–27 juni 2026</div>
+    <div class="meta-pill"><span class="dot dot-gold"></span>100 kr per matchdag</div>
+  </div>
+</header>
+
+<div class="tz-bar">
+  <div class="tz-item">
+    <span class="tz-flag">🇺🇸</span>
+    <span class="tz-name">ET (New York)</span>
+    <span class="tz-val us">UTC−4</span>
+  </div>
+  <div style="width:1px;background:var(--border);"></div>
+  <div class="tz-item">
+    <span class="tz-flag">🇸🇪</span>
+    <span class="tz-name">CEST (Sverige)</span>
+    <span class="tz-val se">ET + 6 tim</span>
+  </div>
+</div>
+
+<main>
+
+<!-- ══════════════════════════════════════════
+     MATCHDAG 1 — 11 juni
+══════════════════════════════════════════ -->
+
+<div class="matchday-header">
+  <div class="matchday-num">1</div>
+  <div class="matchday-info">
+    <div class="matchday-title">Matchdag 1</div>
+    <div class="matchday-date">Torsdag 11 juni</div>
+  </div>
+  <div class="matchday-line"></div>
+  <div class="match-count-badge">2 matcher</div>
+</div>
+<div class="matches-grid">
+  <div class="match-card g-A">
+    <div class="group-badge">A</div>
+    <div class="match-teams">
+      <div class="teams">Mexico 🇲🇽 vs 🇿🇦 Sydafrika</div>
+      <div class="venue">Estadio Azteca, Mexico City</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">15:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">21:00</span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-A">
+    <div class="group-badge">A</div>
+    <div class="match-teams">
+      <div class="teams">Sydkorea 🇰🇷 vs 🇨🇿 Tjeckien</div>
+      <div class="venue">Estadio Akron, Guadalajara</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">22:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">04:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MATCHDAG 2 — 12 juni
+══════════════════════════════════════════ -->
+
+<div class="matchday-header">
+  <div class="matchday-num">2</div>
+  <div class="matchday-info">
+    <div class="matchday-title">Matchdag 2</div>
+    <div class="matchday-date">Fredag 12 juni</div>
+  </div>
+  <div class="matchday-line"></div>
+  <div class="match-count-badge">2 matcher</div>
+</div>
+<div class="matches-grid">
+  <div class="match-card g-B">
+    <div class="group-badge">B</div>
+    <div class="match-teams">
+      <div class="teams">Kanada 🇨🇦 vs 🇧🇦 Bosnien</div>
+      <div class="venue">BMO Field, Toronto</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">15:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">21:00</span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-D">
+    <div class="group-badge">D</div>
+    <div class="match-teams">
+      <div class="teams">USA 🇺🇸 vs 🇵🇾 Paraguay</div>
+      <div class="venue">SoFi Stadium, Inglewood</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">21:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">03:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MATCHDAG 3 — 13–14 juni
+══════════════════════════════════════════ -->
+
+<div class="matchday-header">
+  <div class="matchday-num">3</div>
+  <div class="matchday-info">
+    <div class="matchday-title">Matchdag 3</div>
+    <div class="matchday-date">Lördag 13 juni (natt till söndag 14 juni)</div>
+  </div>
+  <div class="matchday-line"></div>
+  <div class="match-count-badge">3 matcher</div>
+</div>
+<div class="matches-grid">
+  <div class="match-card g-B">
+    <div class="group-badge">B</div>
+    <div class="match-teams">
+      <div class="teams">Qatar 🇶🇦 vs 🇨🇭 Schweiz</div>
+      <div class="venue">Levi's Stadium, Santa Clara</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">15:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">21:00</span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-C">
+    <div class="group-badge">C</div>
+    <div class="match-teams">
+      <div class="teams">Brasilien 🇧🇷 vs 🇲🇦 Marocko</div>
+      <div class="venue">MetLife Stadium, East Rutherford</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">18:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">00:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-C">
+    <div class="group-badge">C</div>
+    <div class="match-teams">
+      <div class="teams">Haiti 🇭🇹 vs 🏴󠁧󠁢󠁳󠁣󠁴󠁿 Skottland</div>
+      <div class="venue">Gillette Stadium, Foxboro</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">21:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">03:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- NOTE: Australia vs Turkiye kicks off Sat Jun 13 midnight ET = Sun Jun 14 06:00 SE -->
+
+<!-- This is technically part of Matchdag 3 (same "night") -->
+
+<div style="margin: 8px 0 0 0; padding: 8px 12px; background: rgba(230,57,70,0.06); border-left: 3px solid var(--accent); border-radius: 4px; font-size: 12px; color: var(--muted);">
+  ⚠️ <strong style="color:#e63946;">OBS:</strong> Australia vs Turkiet sparkar igång 00:00 ET natten 13→14 juni (06:00 SE lördagsmorgon) — tillhör Matchdag 3
+</div>
+<div class="matches-grid" style="margin-top:8px;">
+  <div class="match-card g-D">
+    <div class="group-badge">D</div>
+    <div class="match-teams">
+      <div class="teams">Australien 🇦🇺 vs 🇹🇷 Turkiet</div>
+      <div class="venue">BC Place, Vancouver</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">00:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">06:00</span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MATCHDAG 4 — 14 juni
+══════════════════════════════════════════ -->
+
+<div class="matchday-header">
+  <div class="matchday-num">4</div>
+  <div class="matchday-info">
+    <div class="matchday-title">Matchdag 4</div>
+    <div class="matchday-date">Söndag 14 juni</div>
+  </div>
+  <div class="matchday-line"></div>
+  <div class="match-count-badge">4 matcher</div>
+</div>
+<div class="matches-grid">
+  <div class="match-card g-E">
+    <div class="group-badge">E</div>
+    <div class="match-teams">
+      <div class="teams">Tyskland 🇩🇪 vs 🇨🇼 Curaçao</div>
+      <div class="venue">NRG Stadium, Houston</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">13:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">19:00</span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-F">
+    <div class="group-badge">F</div>
+    <div class="match-teams">
+      <div class="teams">Nederländerna 🇳🇱 vs 🇯🇵 Japan</div>
+      <div class="venue">AT&T Stadium, Arlington</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">16:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">22:00</span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-E">
+    <div class="group-badge">E</div>
+    <div class="match-teams">
+      <div class="teams">Elfenbenskusten 🇨🇮 vs 🇪🇨 Ecuador</div>
+      <div class="venue">Lincoln Financial Field, Philadelphia</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">19:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">01:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-F">
+    <div class="group-badge">F</div>
+    <div class="match-teams">
+      <div class="teams">Sverige 🇸🇪 vs 🇹🇳 Tunisien</div>
+      <div class="venue">Estadio BBVA, Monterrey</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">22:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">04:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MATCHDAG 5 — 15 juni
+══════════════════════════════════════════ -->
+
+<div class="matchday-header">
+  <div class="matchday-num">5</div>
+  <div class="matchday-info">
+    <div class="matchday-title">Matchdag 5</div>
+    <div class="matchday-date">Måndag 15 juni</div>
+  </div>
+  <div class="matchday-line"></div>
+  <div class="match-count-badge">4 matcher</div>
+</div>
+<div class="matches-grid">
+  <div class="match-card g-G">
+    <div class="group-badge">G</div>
+    <div class="match-teams">
+      <div class="teams">Belgien 🇧🇪 vs 🇪🇬 Egypten</div>
+      <div class="venue">Lumen Field, Seattle</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">15:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">21:00</span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-H">
+    <div class="group-badge">H</div>
+    <div class="match-teams">
+      <div class="teams">Spanien 🇪🇸 vs 🇨🇻 Kap Verde</div>
+      <div class="venue">Mercedes-Benz Stadium, Atlanta</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">18:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">00:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-G">
+    <div class="group-badge">G</div>
+    <div class="match-teams">
+      <div class="teams">Iran 🇮🇷 vs 🇳🇿 Nya Zeeland</div>
+      <div class="venue">SoFi Stadium, Inglewood</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">21:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">03:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-H">
+    <div class="group-badge">H</div>
+    <div class="match-teams">
+      <div class="teams">Saudiarabien 🇸🇦 vs 🇺🇾 Uruguay</div>
+      <div class="venue">Hard Rock Stadium, Miami</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">21:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">03:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MATCHDAG 6 — 16 juni
+══════════════════════════════════════════ -->
+
+<div class="matchday-header">
+  <div class="matchday-num">6</div>
+  <div class="matchday-info">
+    <div class="matchday-title">Matchdag 6</div>
+    <div class="matchday-date">Tisdag 16 juni</div>
+  </div>
+  <div class="matchday-line"></div>
+  <div class="match-count-badge">4 matcher</div>
+</div>
+<div class="matches-grid">
+  <div class="match-card g-I">
+    <div class="group-badge">I</div>
+    <div class="match-teams">
+      <div class="teams">Frankrike 🇫🇷 vs 🇸🇳 Senegal</div>
+      <div class="venue">AT&T Stadium, Arlington</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">13:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">19:00</span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-J">
+    <div class="group-badge">J</div>
+    <div class="match-teams">
+      <div class="teams">Argentina 🇦🇷 vs 🇩🇿 Algeriet</div>
+      <div class="venue">MetLife Stadium, East Rutherford</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">16:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">22:00</span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-I">
+    <div class="group-badge">I</div>
+    <div class="match-teams">
+      <div class="teams">Norge 🇳🇴 vs 🇮🇶 Irak</div>
+      <div class="venue">Levi's Stadium, Santa Clara</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">19:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">01:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-J">
+    <div class="group-badge">J</div>
+    <div class="match-teams">
+      <div class="teams">Österrike 🇦🇹 vs 🇯🇴 Jordanien</div>
+      <div class="venue">NRG Stadium, Houston</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">22:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">04:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MATCHDAG 7 — 17 juni
+══════════════════════════════════════════ -->
+
+<div class="matchday-header">
+  <div class="matchday-num">7</div>
+  <div class="matchday-info">
+    <div class="matchday-title">Matchdag 7</div>
+    <div class="matchday-date">Onsdag 17 juni</div>
+  </div>
+  <div class="matchday-line"></div>
+  <div class="match-count-badge">4 matcher</div>
+</div>
+<div class="matches-grid">
+  <div class="match-card g-K">
+    <div class="group-badge">K</div>
+    <div class="match-teams">
+      <div class="teams">Portugal 🇵🇹 vs 🇨🇩 DR Kongo</div>
+      <div class="venue">NRG Stadium, Houston</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">13:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">19:00</span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-L">
+    <div class="group-badge">L</div>
+    <div class="match-teams">
+      <div class="teams">England 🏴󠁧󠁢󠁥󠁮󠁧󠁿 vs 🇭🇷 Kroatien</div>
+      <div class="venue">Gillette Stadium, Foxboro</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">15:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">21:00</span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-L">
+    <div class="group-badge">L</div>
+    <div class="match-teams">
+      <div class="teams">Ghana 🇬🇭 vs 🇵🇦 Panama</div>
+      <div class="venue">Arrowhead Stadium, Kansas City</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">18:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">00:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-K">
+    <div class="group-badge">K</div>
+    <div class="match-teams">
+      <div class="teams">Uzbekistan 🇺🇿 vs 🇨🇴 Colombia</div>
+      <div class="venue">Estadio Azteca, Mexico City</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">22:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">04:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MATCHDAG 8 — 18 juni
+══════════════════════════════════════════ -->
+
+<div class="matchday-header">
+  <div class="matchday-num">8</div>
+  <div class="matchday-info">
+    <div class="matchday-title">Matchdag 8</div>
+    <div class="matchday-date">Torsdag 18 juni</div>
+  </div>
+  <div class="matchday-line"></div>
+  <div class="match-count-badge">4 matcher</div>
+</div>
+<div class="matches-grid">
+  <div class="match-card g-A">
+    <div class="group-badge">A</div>
+    <div class="match-teams">
+      <div class="teams">Tjeckien 🇨🇿 vs 🇿🇦 Sydafrika</div>
+      <div class="venue">Mercedes-Benz Stadium, Atlanta</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">12:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">18:00</span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-B">
+    <div class="group-badge">B</div>
+    <div class="match-teams">
+      <div class="teams">Schweiz 🇨🇭 vs 🇧🇦 Bosnien</div>
+      <div class="venue">SoFi Stadium, Inglewood</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">15:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">21:00</span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-B">
+    <div class="group-badge">B</div>
+    <div class="match-teams">
+      <div class="teams">Kanada 🇨🇦 vs 🇶🇦 Qatar</div>
+      <div class="venue">BC Place, Vancouver</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">18:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">00:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-A">
+    <div class="group-badge">A</div>
+    <div class="match-teams">
+      <div class="teams">Mexico 🇲🇽 vs 🇰🇷 Sydkorea</div>
+      <div class="venue">Estadio Akron, Guadalajara</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">21:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">03:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MATCHDAG 9 — 19 juni
+══════════════════════════════════════════ -->
+
+<div class="matchday-header">
+  <div class="matchday-num">9</div>
+  <div class="matchday-info">
+    <div class="matchday-title">Matchdag 9</div>
+    <div class="matchday-date">Fredag 19 juni</div>
+  </div>
+  <div class="matchday-line"></div>
+  <div class="match-count-badge">4 matcher</div>
+</div>
+<div class="matches-grid">
+  <div class="match-card g-D">
+    <div class="group-badge">D</div>
+    <div class="match-teams">
+      <div class="teams">USA 🇺🇸 vs 🇦🇺 Australien</div>
+      <div class="venue">Lumen Field, Seattle</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">15:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">21:00</span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-C">
+    <div class="group-badge">C</div>
+    <div class="match-teams">
+      <div class="teams">Skottland 🏴󠁧󠁢󠁳󠁣󠁴󠁿 vs 🇲🇦 Marocko</div>
+      <div class="venue">Gillette Stadium, Foxboro</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">18:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">00:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-C">
+    <div class="group-badge">C</div>
+    <div class="match-teams">
+      <div class="teams">Brasilien 🇧🇷 vs 🇭🇹 Haiti</div>
+      <div class="venue">Lincoln Financial Field, Philadelphia</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">20:30</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">02:30 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-D">
+    <div class="group-badge">D</div>
+    <div class="match-teams">
+      <div class="teams">Turkiet 🇹🇷 vs 🇵🇾 Paraguay</div>
+      <div class="venue">Levi's Stadium, Santa Clara</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">23:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">05:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MATCHDAG 10 — 20 juni
+══════════════════════════════════════════ -->
+
+<div class="matchday-header">
+  <div class="matchday-num">10</div>
+  <div class="matchday-info">
+    <div class="matchday-title">Matchdag 10</div>
+    <div class="matchday-date">Lördag 20 juni</div>
+  </div>
+  <div class="matchday-line"></div>
+  <div class="match-count-badge">4 matcher</div>
+</div>
+<div class="matches-grid">
+  <div class="match-card g-F">
+    <div class="group-badge">F</div>
+    <div class="match-teams">
+      <div class="teams">Nederländerna 🇳🇱 vs 🇸🇪 Sverige</div>
+      <div class="venue">NRG Stadium, Houston</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">13:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">19:00</span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-E">
+    <div class="group-badge">E</div>
+    <div class="match-teams">
+      <div class="teams">Tyskland 🇩🇪 vs 🇨🇮 Elfenbenskusten</div>
+      <div class="venue">BMO Field, Toronto</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">16:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">22:00</span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-E">
+    <div class="group-badge">E</div>
+    <div class="match-teams">
+      <div class="teams">Ecuador 🇪🇨 vs 🇨🇼 Curaçao</div>
+      <div class="venue">Arrowhead Stadium, Kansas City</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">20:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">02:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-F">
+    <div class="group-badge">F</div>
+    <div class="match-teams">
+      <div class="teams">Tunisien 🇹🇳 vs 🇯🇵 Japan</div>
+      <div class="venue">Estadio BBVA, Monterrey</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">00:00 <span class="next-day">+1</span></span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">06:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MATCHDAG 11 — 21 juni
+══════════════════════════════════════════ -->
+
+<div class="matchday-header">
+  <div class="matchday-num">11</div>
+  <div class="matchday-info">
+    <div class="matchday-title">Matchdag 11</div>
+    <div class="matchday-date">Söndag 21 juni</div>
+  </div>
+  <div class="matchday-line"></div>
+  <div class="match-count-badge">4 matcher</div>
+</div>
+<div class="matches-grid">
+  <div class="match-card g-G">
+    <div class="group-badge">G</div>
+    <div class="match-teams">
+      <div class="teams">Belgien 🇧🇪 vs 🇮🇷 Iran</div>
+      <div class="venue">SoFi Stadium, Inglewood</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">15:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">21:00</span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-H">
+    <div class="group-badge">H</div>
+    <div class="match-teams">
+      <div class="teams">Spanien 🇪🇸 vs 🇸🇦 Saudiarabien</div>
+      <div class="venue">Estadio Akron, Guadalajara</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">18:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">00:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-G">
+    <div class="group-badge">G</div>
+    <div class="match-teams">
+      <div class="teams">Nya Zeeland 🇳🇿 vs 🇪🇬 Egypten</div>
+      <div class="venue">BC Place, Vancouver</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">21:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">03:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-H">
+    <div class="group-badge">H</div>
+    <div class="match-teams">
+      <div class="teams">Kap Verde 🇨🇻 vs 🇺🇾 Uruguay</div>
+      <div class="venue">Estadio BBVA, Monterrey</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">21:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">03:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MATCHDAG 12 — 22 juni
+══════════════════════════════════════════ -->
+
+<div class="matchday-header">
+  <div class="matchday-num">12</div>
+  <div class="matchday-info">
+    <div class="matchday-title">Matchdag 12</div>
+    <div class="matchday-date">Måndag 22 juni</div>
+  </div>
+  <div class="matchday-line"></div>
+  <div class="match-count-badge">4 matcher</div>
+</div>
+<div class="matches-grid">
+  <div class="match-card g-I">
+    <div class="group-badge">I</div>
+    <div class="match-teams">
+      <div class="teams">Frankrike 🇫🇷 vs 🇮🇶 Irak</div>
+      <div class="venue">Lumen Field, Seattle</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">13:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">19:00</span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-J">
+    <div class="group-badge">J</div>
+    <div class="match-teams">
+      <div class="teams">Argentina 🇦🇷 vs 🇦🇹 Österrike</div>
+      <div class="venue">BC Place, Vancouver</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">16:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">22:00</span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-I">
+    <div class="group-badge">I</div>
+    <div class="match-teams">
+      <div class="teams">Senegal 🇸🇳 vs 🇳🇴 Norge</div>
+      <div class="venue">Gillette Stadium, Foxboro</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">19:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">01:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-J">
+    <div class="group-badge">J</div>
+    <div class="match-teams">
+      <div class="teams">Jordanien 🇯🇴 vs 🇩🇿 Algeriet</div>
+      <div class="venue">Levi's Stadium, Santa Clara</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">23:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">05:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MATCHDAG 13 — 23 juni
+══════════════════════════════════════════ -->
+
+<div class="matchday-header">
+  <div class="matchday-num">13</div>
+  <div class="matchday-info">
+    <div class="matchday-title">Matchdag 13</div>
+    <div class="matchday-date">Tisdag 23 juni</div>
+  </div>
+  <div class="matchday-line"></div>
+  <div class="match-count-badge">4 matcher</div>
+</div>
+<div class="matches-grid">
+  <div class="match-card g-K">
+    <div class="group-badge">K</div>
+    <div class="match-teams">
+      <div class="teams">Portugal 🇵🇹 vs 🇺🇿 Uzbekistan</div>
+      <div class="venue">NRG Stadium, Houston</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">13:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">19:00</span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-L">
+    <div class="group-badge">L</div>
+    <div class="match-teams">
+      <div class="teams">England 🏴󠁧󠁢󠁥󠁮󠁧󠁿 vs 🇬🇭 Ghana</div>
+      <div class="venue">Lincoln Financial Field, Philadelphia</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">16:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">22:00</span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-L">
+    <div class="group-badge">L</div>
+    <div class="match-teams">
+      <div class="teams">Kroatien 🇭🇷 vs 🇵🇦 Panama</div>
+      <div class="venue">Arrowhead Stadium, Kansas City</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">19:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">01:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-K">
+    <div class="group-badge">K</div>
+    <div class="match-teams">
+      <div class="teams">Colombia 🇨🇴 vs 🇨🇩 DR Kongo</div>
+      <div class="venue">Estadio Akron, Guadalajara</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">22:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">04:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MATCHDAG 14 — 24 juni
+══════════════════════════════════════════ -->
+
+<div class="matchday-header">
+  <div class="matchday-num">14</div>
+  <div class="matchday-info">
+    <div class="matchday-title">Matchdag 14</div>
+    <div class="matchday-date">Onsdag 24 juni</div>
+  </div>
+  <div class="matchday-line"></div>
+  <div class="match-count-badge">8 matcher</div>
+</div>
+<div class="matches-grid">
+  <div class="match-card g-B">
+    <div class="group-badge">B</div>
+    <div class="match-teams">
+      <div class="teams">Schweiz 🇨🇭 vs 🇨🇦 Kanada</div>
+      <div class="venue">BC Place, Vancouver</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">15:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">21:00</span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-B">
+    <div class="group-badge">B</div>
+    <div class="match-teams">
+      <div class="teams">Bosnien 🇧🇦 vs 🇶🇦 Qatar</div>
+      <div class="venue">Lumen Field, Seattle</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">15:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">21:00</span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-C">
+    <div class="group-badge">C</div>
+    <div class="match-teams">
+      <div class="teams">Skottland 🏴󠁧󠁢󠁳󠁣󠁴󠁿 vs 🇧🇷 Brasilien</div>
+      <div class="venue">Hard Rock Stadium, Miami</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">18:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">00:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-C">
+    <div class="group-badge">C</div>
+    <div class="match-teams">
+      <div class="teams">Marocko 🇲🇦 vs 🇭🇹 Haiti</div>
+      <div class="venue">Mercedes-Benz Stadium, Atlanta</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">18:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">00:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-A">
+    <div class="group-badge">A</div>
+    <div class="match-teams">
+      <div class="teams">Tjeckien 🇨🇿 vs 🇲🇽 Mexico</div>
+      <div class="venue">Estadio Azteca, Mexico City</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">21:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">03:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-A">
+    <div class="group-badge">A</div>
+    <div class="match-teams">
+      <div class="teams">Sydafrika 🇿🇦 vs 🇰🇷 Sydkorea</div>
+      <div class="venue">Estadio BBVA, Monterrey</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">21:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">03:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MATCHDAG 15 — 25 juni
+══════════════════════════════════════════ -->
+
+<div class="matchday-header">
+  <div class="matchday-num">15</div>
+  <div class="matchday-info">
+    <div class="matchday-title">Matchdag 15</div>
+    <div class="matchday-date">Torsdag 25 juni</div>
+  </div>
+  <div class="matchday-line"></div>
+  <div class="match-count-badge">8 matcher</div>
+</div>
+<div class="matches-grid">
+  <div class="match-card g-E">
+    <div class="group-badge">E</div>
+    <div class="match-teams">
+      <div class="teams">Curaçao 🇨🇼 vs 🇨🇮 Elfenbenskusten</div>
+      <div class="venue">Lincoln Financial Field, Philadelphia</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">16:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">22:00</span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-E">
+    <div class="group-badge">E</div>
+    <div class="match-teams">
+      <div class="teams">Ecuador 🇪🇨 vs 🇩🇪 Tyskland</div>
+      <div class="venue">MetLife Stadium, East Rutherford</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">16:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">22:00</span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-F">
+    <div class="group-badge">F</div>
+    <div class="match-teams">
+      <div class="teams">Japan 🇯🇵 vs 🇸🇪 Sverige</div>
+      <div class="venue">AT&T Stadium, Arlington</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">19:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">01:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-F">
+    <div class="group-badge">F</div>
+    <div class="match-teams">
+      <div class="teams">Tunisien 🇹🇳 vs 🇳🇱 Nederländerna</div>
+      <div class="venue">Arrowhead Stadium, Kansas City</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">19:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">01:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-D">
+    <div class="group-badge">D</div>
+    <div class="match-teams">
+      <div class="teams">Turkiet 🇹🇷 vs 🇺🇸 USA</div>
+      <div class="venue">SoFi Stadium, Inglewood</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">22:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">04:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-D">
+    <div class="group-badge">D</div>
+    <div class="match-teams">
+      <div class="teams">Paraguay 🇵🇾 vs 🇦🇺 Australien</div>
+      <div class="venue">Levi's Stadium, Santa Clara</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">22:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">04:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MATCHDAG 16 — 26 juni
+══════════════════════════════════════════ -->
+
+<div class="matchday-header">
+  <div class="matchday-num">16</div>
+  <div class="matchday-info">
+    <div class="matchday-title">Matchdag 16</div>
+    <div class="matchday-date">Fredag 26 juni</div>
+  </div>
+  <div class="matchday-line"></div>
+  <div class="match-count-badge">8 matcher</div>
+</div>
+<div class="matches-grid">
+  <div class="match-card g-I">
+    <div class="group-badge">I</div>
+    <div class="match-teams">
+      <div class="teams">Norge 🇳🇴 vs 🇫🇷 Frankrike</div>
+      <div class="venue">Gillette Stadium, Foxboro</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">15:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">21:00</span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-I">
+    <div class="group-badge">I</div>
+    <div class="match-teams">
+      <div class="teams">Senegal 🇸🇳 vs 🇮🇶 Irak</div>
+      <div class="venue">BMO Field, Toronto</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">15:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">21:00</span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-H">
+    <div class="group-badge">H</div>
+    <div class="match-teams">
+      <div class="teams">Kap Verde 🇨🇻 vs 🇸🇦 Saudiarabien</div>
+      <div class="venue">NRG Stadium, Houston</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">20:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">02:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-H">
+    <div class="group-badge">H</div>
+    <div class="match-teams">
+      <div class="teams">Uruguay 🇺🇾 vs 🇪🇸 Spanien</div>
+      <div class="venue">Estadio Akron, Guadalajara</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">20:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">02:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-G">
+    <div class="group-badge">G</div>
+    <div class="match-teams">
+      <div class="teams">Egypten 🇪🇬 vs 🇮🇷 Iran</div>
+      <div class="venue">Lumen Field, Seattle</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">23:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">05:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-G">
+    <div class="group-badge">G</div>
+    <div class="match-teams">
+      <div class="teams">Nya Zeeland 🇳🇿 vs 🇧🇪 Belgien</div>
+      <div class="venue">BC Place, Vancouver</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">23:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">05:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MATCHDAG 17 — 27 juni
+══════════════════════════════════════════ -->
+
+<div class="matchday-header">
+  <div class="matchday-num">17</div>
+  <div class="matchday-info">
+    <div class="matchday-title">Matchdag 17 — SISTA OMGÅNGEN</div>
+    <div class="matchday-date">Lördag 27 juni</div>
+  </div>
+  <div class="matchday-line"></div>
+  <div class="match-count-badge">8 matcher</div>
+</div>
+<div class="matches-grid">
+  <div class="match-card g-L">
+    <div class="group-badge">L</div>
+    <div class="match-teams">
+      <div class="teams">Panama 🇵🇦 vs 🏴󠁧󠁢󠁥󠁮󠁧󠁿 England</div>
+      <div class="venue">MetLife Stadium, East Rutherford</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">17:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">23:00</span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-L">
+    <div class="group-badge">L</div>
+    <div class="match-teams">
+      <div class="teams">Kroatien 🇭🇷 vs 🇬🇭 Ghana</div>
+      <div class="venue">Lincoln Financial Field, Philadelphia</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">17:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">23:00</span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-K">
+    <div class="group-badge">K</div>
+    <div class="match-teams">
+      <div class="teams">Colombia 🇨🇴 vs 🇵🇹 Portugal</div>
+      <div class="venue">Hard Rock Stadium, Miami</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">19:30</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">01:30 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-K">
+    <div class="group-badge">K</div>
+    <div class="match-teams">
+      <div class="teams">DR Kongo 🇨🇩 vs 🇺🇿 Uzbekistan</div>
+      <div class="venue">Mercedes-Benz Stadium, Atlanta</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">19:30</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">01:30 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-J">
+    <div class="group-badge">J</div>
+    <div class="match-teams">
+      <div class="teams">Algeriet 🇩🇿 vs 🇦🇹 Österrike</div>
+      <div class="venue">Arrowhead Stadium, Kansas City</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">22:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">04:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+  <div class="match-card g-J">
+    <div class="group-badge">J</div>
+    <div class="match-teams">
+      <div class="teams">Jordanien 🇯🇴 vs 🇦🇷 Argentina</div>
+      <div class="venue">AT&T Stadium, Arlington</div>
+    </div>
+    <div class="match-times">
+      <div class="time-row"><span class="time-badge time-us">22:00</span><span class="time-label">ET</span></div>
+      <div class="time-row"><span class="time-badge time-se">04:00 <span class="next-day">+1</span></span><span class="time-label">SE</span></div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  <p>⚽ FIFA VM 2026 · Gruppspelet 11–27 juni · Alla tider i <strong>ET (Eastern Time, UTC−4)</strong> och <strong>CEST (Sverige, UTC+2)</strong></p>
+  <p style="margin-top:6px;">+1 = nästa kalenderdag i Sverige · Matchdagar definierade av amerikansk tid</p>
+</footer>
+
+</body>
+</html>
